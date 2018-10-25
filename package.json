@@ -1,0 +1,30 @@
+{
+  "name": "wip-pool",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "DEBUG='' mocha --require test/context 'test/**/*.test.js'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kudla/wip-pool.git"
+  },
+  "author": "Artem Kudla <kudla.artem@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kudla/wip-pool/issues"
+  },
+  "homepage": "https://github.com/kudla/wip-pool#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "debug": "^4.1.0",
+    "eslint": "^5.7.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-chai-expect": "^2.0.1",
+    "mocha": "^5.2.0",
+    "sinon": "^7.1.0"
+  }
+}
