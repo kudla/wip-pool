@@ -106,7 +106,7 @@ describe('lib/WipPool', () => {
             expect(result).to.be.deep.equal(DONE_RESULT);
         });
 
-        it('should iteret with resolve function', async () => {
+        it('should handle WipDone on factory function', async () => {
             const pool = WipPool(() => {throw new WipDone();});
             const result = await pool.next();
 
