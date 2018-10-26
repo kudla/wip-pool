@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "test": "DEBUG='' mocha --require test/context 'test/**/*.test.js'"
+    "test": "DEBUG='' node --harmony-async-iteration node_modules/.bin/mocha --require test/context 'test/**/*.test.js'"
   },
   "repository": {
     "type": "git",
