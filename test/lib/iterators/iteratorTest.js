@@ -21,6 +21,10 @@ function iteratorTest(iteratorFactory, sourceFactory, nonCompatibleValue) {
         const iterator = iteratorFactory(nonCompatibleValue);
         expect(Boolean(iterator)).to.be.equal(false);
     });
+
+    it.skip('should be used to reate appropriate iterator for WipPool', () => {
+        // TODO
+    })
 }
 
 module.exports = {
