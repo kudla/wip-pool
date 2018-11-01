@@ -1,6 +1,6 @@
 const {SignalAggregator} = require('../../lib/SignalAggregator');
 
-describe.only('lib/SignalAggregator', () => {
+describe('lib/SignalAggregator', () => {
     it('should be a SignalAggregator class', () => {
         expect(SignalAggregator).to.have.property('prototype');
         expect(SignalAggregator.prototype.constructor, 'constructor').to.be.equal(SignalAggregator);
@@ -21,20 +21,25 @@ describe.only('lib/SignalAggregator', () => {
         });
     });
 
-    describe('add method', () => {
+    describe('addSignals method', () => {
         let aggregator;
+
         beforeEach(() => {
             aggregator = new SignalAggregator();
         });
 
-        it('should be a function', () => {
-            expect(aggregator.add).to.be.instanceof(Function);
+        afterEach(() => {
+            aggregator = null;
         });
 
-        it('should affect aggregation with added signal', () => {
+        it('should be a function', () => {
+            expect(aggregator.addSignals).to.be.instanceof(Function);
+        });
+
+        it('should affect aggregation with addSignalsed signal', () => {
             const signal = 5;
 
-            aggregator.add(signal);
+            aggregator.addSignals(signal);
 
             expect(aggregator).to.be.deep.equal({
                 count: 1,
@@ -46,7 +51,7 @@ describe.only('lib/SignalAggregator', () => {
         });
 
         it('should skip non number signals', () => {
-            aggregator.add('5');
+            aggregator.addSignals('5');
 
             expect(aggregator).to.be.deep.equal({
                 count: 0,
@@ -57,12 +62,12 @@ describe.only('lib/SignalAggregator', () => {
             });
         });
 
-        it('should affect aggregation with added signals', () => {
+        it('should affect aggregation with addSignalsed signals', () => {
             const minSignal = 10;
             const maxSignal = 20;
             const signals = [minSignal, maxSignal];
 
-            aggregator.add(...signals);
+            aggregator.addSignals(...signals);
 
             expect(aggregator).to.be.deep.equal({
                 count: signals.length,
@@ -87,8 +92,8 @@ describe.only('lib/SignalAggregator', () => {
             const count = [...signalSet1, ...signalSet2].length;
             const avg = sum / count;
 
-            aggregator.add(...signalSet1);
-            aggregator.add(...signalSet2);
+            aggregator.addSignals(...signalSet1);
+            aggregator.addSignals(...signalSet2);
 
             expect(aggregator).to.be.deep.equal({
                 count,
@@ -97,6 +102,17 @@ describe.only('lib/SignalAggregator', () => {
                 min: minSignal,
                 max: maxSignal
             });
+        });
+
+        it('should be inited with signls on creation', () => {
+            const signals = [10, 20];
+
+            const aggregator1 = new SignalAggregator(...signals);
+            const aggregator2 = new SignalAggregator();
+
+            aggregator2.addSignals(...signals);
+
+            expect(aggregator1).to.be.deep.equal(aggregator2);
         });
     });
 });
