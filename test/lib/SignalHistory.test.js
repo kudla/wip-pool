@@ -12,12 +12,15 @@ const THAUSAND_YEARS = 1000 *   // years
 
 describe('lib/SignalHistory', () => {
     let stats;
+    let time;
     beforeEach(() => {
         stats = new SignalAggregator();
+        time = new SignalAggregator();
     });
 
     afterEach(() => {
         stats = null;
+        time = null;
     });
 
     it('should be a SignalHistory class', () => {
@@ -34,7 +37,8 @@ describe('lib/SignalHistory', () => {
         expect(new SignalHistory()).to.deep.include({
             timeWindow: null,
             lengthLimit: DEFAULT_LENGTH_LIMIT,
-            stats
+            stats,
+            time
         });
     });
 
@@ -55,118 +59,180 @@ describe('lib/SignalHistory', () => {
             expect(history.addSignals).to.be.instanceof(Function);
         });
 
-        it('should add signal to stats', () => {
-            const signal = 100;
+        describe('stats', () => {
+            it('should add signal to stats', () => {
+                const signal = 100;
 
-            history.addSignals(signal);
-
-            stats.addSignals(signal);
-
-            expect(history.stats).to.deep.equal(stats);
-        });
-
-        it('should add signals to stats', () => {
-            const signals = [100, 200];
-
-            history.addSignals(...signals);
-
-            stats.addSignals(...signals);
-
-            expect(history.stats).to.deep.equal(stats);
-        });
-
-
-        it('should incrementally add stats', () => {
-            const signal1 = 100;
-            const signal2 = 200;
-
-            history.addSignals(signal1);
-            history.addSignals(signal2);
-
-            stats.addSignals(signal1, signal2);
-
-            expect(history.stats).to.deep.equal(stats);
-        });
-
-        it('should not have time window by default', () => {
-            const signal1 = 100;
-            const signal2 = 200;
-
-            history.addSignals(signal1);
-
-            clock.tick(THAUSAND_YEARS);
-
-            history.addSignals(signal2);
-
-            stats.addSignals(signal1, signal2);
-            expect(history.stats).to.deep.equal(stats);
-        });
-
-        it(`should limit history length to ${DEFAULT_LENGTH_LIMIT} signals by defaultt`, () => {
-            history.addSignals(100);
-            for(let signalIndex = 0; signalIndex < DEFAULT_LENGTH_LIMIT; signalIndex += 1) {
-                const signal = signalIndex;
                 history.addSignals(signal);
+
                 stats.addSignals(signal);
-            }
-            expect(history.stats).to.deep.equal(stats);
+
+                expect(history.stats).to.deep.equal(stats);
+            });
+
+            it('should add signals to stats', () => {
+                const signals = [100, 200];
+
+                history.addSignals(...signals);
+
+                stats.addSignals(...signals);
+
+                expect(history.stats).to.deep.equal(stats);
+            });
+
+
+            it('should incrementally add stats', () => {
+                const signal1 = 100;
+                const signal2 = 200;
+
+                history.addSignals(signal1);
+                history.addSignals(signal2);
+
+                stats.addSignals(signal1, signal2);
+
+                expect(history.stats).to.deep.equal(stats);
+            });
+
+            it('should not have time window by default', () => {
+                const signal1 = 100;
+                const signal2 = 200;
+
+                history.addSignals(signal1);
+
+                clock.tick(THAUSAND_YEARS);
+
+                history.addSignals(signal2);
+
+                stats.addSignals(signal1, signal2);
+                expect(history.stats).to.deep.equal(stats);
+            });
+
+            it(`should limit history length to ${DEFAULT_LENGTH_LIMIT} signals by default`, () => {
+                history.addSignals(100);
+                for(let signalIndex = 0; signalIndex < DEFAULT_LENGTH_LIMIT; signalIndex += 1) {
+                    const signal = signalIndex;
+                    history.addSignals(signal);
+                    stats.addSignals(signal);
+                }
+                expect(history.stats).to.deep.equal(stats);
+            });
+
+            it('should limit history length with options', () => {
+                const history = new SignalHistory({lengthLimit: 2});
+
+                const signals = [20, 30];
+
+                history.addSignals(10, ...signals);
+                stats.addSignals(...signals);
+
+                expect(history.stats).to.deep.equal(stats);
+            });
+
+            it('should apply time window with options', () => {
+                const timeWindow = 100;
+                const history = new SignalHistory({timeWindow});
+
+                const signals = [20, 30];
+
+                history.addSignals(10);
+                clock.tick(timeWindow + 1);
+                history.addSignals(...signals);
+                stats.addSignals(...signals);
+
+                expect(history.stats).to.deep.equal(stats);
+            });
+
+            it('should cancel history length limit with options', () => {
+                const history = new SignalHistory({lengthLimit: null});
+
+                for(let signalIndex = 0; signalIndex < 10000; signalIndex += 1) {
+                    const signal = signalIndex;
+                    history.addSignals(signal);
+                    stats.addSignals(signal);
+                }
+
+                expect(history.stats).to.deep.equal(stats);
+            });
+
+            it('should limit history with timeWindow in case it is more strict reestriction', () => {
+                const timeWindow = 100;
+                const history = new SignalHistory({lengthLimit: 3, timeWindow});
+
+                const signals = [10, 20];
+
+                history.addSignals(5);
+
+                clock.tick(timeWindow + 1);
+
+                history.addSignals(...signals);
+                stats.addSignals(...signals);
+
+                expect(history.stats).to.deep.equal(stats);
+            });
         });
 
-        it('should limit history length with options', () => {
-            const history = new SignalHistory({lengthLimit: 2});
+        describe('time', () => {
+            it('should add time stats', () => {
+                history.addSignals(0);
+                time.addSignals(Date.now());
 
-            const signals = [20, 30];
+                clock.tick(100);
 
-            history.addSignals(10, ...signals);
-            stats.addSignals(...signals);
+                history.addSignals(0);
+                time.addSignals(Date.now());
 
-            expect(history.stats).to.deep.equal(stats);
+                expect(history.time).to.be.deep.equal(time);
+            });
+
+            it('should add time stats on history with no limits', () => {
+                const history = new SignalHistory({
+                    lengthLimit: null,
+                    timeWindow: null
+                });
+
+                for(let signalIndex = 0; signalIndex < 10000; signalIndex += 1) {
+                    history.addSignals(0);
+                    time.addSignals(Date.now());
+                    clock.tick(1000);
+                }
+
+                expect(history.time).to.be.deep.equal(time);
+            });
+
+            it('should add time stats on history with length limit', () => {
+                const lengthLimit = 2;
+                const history = new SignalHistory({
+                    lengthLimit
+                });
+                history.addSignals(0);
+
+                for(let signalIndex = 0; signalIndex < lengthLimit; signalIndex += 1) {
+                    clock.tick(100);
+                    history.addSignals(0);
+                    time.addSignals(Date.now());
+                }
+
+                expect(history.time).to.be.deep.equal(time);
+            });
+
+            it('should add time stats on history with time window', () => {
+                const timeWindow = 10;
+                const history = new SignalHistory({
+                    timeWindow,
+                    lengthLimit: null
+                });
+
+                history.addSignals(0);
+
+                for(let signalIndex = 0; signalIndex <= timeWindow; signalIndex += 5) {
+                    clock.tick(5);
+                    history.addSignals(0);
+                    time.addSignals(Date.now());
+                }
+
+                expect(history.time).to.be.deep.equal(time);
+            });
         });
 
-        it('should apply time window with options', () => {
-            const timeWindow = 100;
-            const history = new SignalHistory({timeWindow});
-
-            const signals = [20, 30];
-
-            history.addSignals(10);
-            clock.tick(timeWindow + 1);
-            history.addSignals(...signals);
-            stats.addSignals(...signals);
-
-            expect(history.stats).to.deep.equal(stats);
-        });
-
-
-        it('should cancel history length limit with options', () => {
-            const history = new SignalHistory({lengthLimit: null});
-
-            for(let signalIndex = 0; signalIndex < 10000; signalIndex += 1) {
-                const signal = signalIndex;
-                history.addSignals(signal);
-                stats.addSignals(signal);
-            }
-
-            expect(history.stats).to.deep.equal(stats);
-        });
-
-
-
-        it('should limit history with timeWindow in case it is more strict reestriction', () => {
-            const timeWindow = 100;
-            const history = new SignalHistory({lengthLimit: 3, timeWindow});
-
-            const signals = [10, 20];
-
-            history.addSignals(5);
-
-            clock.tick(timeWindow + 1);
-
-            history.addSignals(...signals);
-            stats.addSignals(...signals);
-
-            expect(history.stats).to.deep.equal(stats);
-        });
-
-     });
+    });
 });
