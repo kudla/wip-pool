@@ -36,7 +36,7 @@ describe('lib/SignalHistory', () => {
     it('should have default options', () => {
         expect(new SignalHistory()).to.deep.include({
             timeWindow: null,
-            lengthLimit: DEFAULT_LENGTH_LIMIT,
+            historyLength: DEFAULT_LENGTH_LIMIT,
             stats,
             time
         });
@@ -118,7 +118,7 @@ describe('lib/SignalHistory', () => {
             });
 
             it('should limit history length with options', () => {
-                const history = new SignalHistory({lengthLimit: 2});
+                const history = new SignalHistory({historyLength: 2});
 
                 const signals = [20, 30];
 
@@ -143,7 +143,7 @@ describe('lib/SignalHistory', () => {
             });
 
             it('should cancel history length limit with options', () => {
-                const history = new SignalHistory({lengthLimit: null});
+                const history = new SignalHistory({historyLength: null});
 
                 for(let signalIndex = 0; signalIndex < 10000; signalIndex += 1) {
                     const signal = signalIndex;
@@ -156,7 +156,7 @@ describe('lib/SignalHistory', () => {
 
             it('should limit history with timeWindow in case it is more strict reestriction', () => {
                 const timeWindow = 100;
-                const history = new SignalHistory({lengthLimit: 3, timeWindow});
+                const history = new SignalHistory({historyLength: 3, timeWindow});
 
                 const signals = [10, 20];
 
@@ -186,7 +186,7 @@ describe('lib/SignalHistory', () => {
 
             it('should add time stats on history with no limits', () => {
                 const history = new SignalHistory({
-                    lengthLimit: null,
+                    historyLength: null,
                     timeWindow: null
                 });
 
@@ -200,13 +200,13 @@ describe('lib/SignalHistory', () => {
             });
 
             it('should add time stats on history with length limit', () => {
-                const lengthLimit = 2;
+                const historyLength = 2;
                 const history = new SignalHistory({
-                    lengthLimit
+                    historyLength
                 });
                 history.addSignals(0);
 
-                for(let signalIndex = 0; signalIndex < lengthLimit; signalIndex += 1) {
+                for(let signalIndex = 0; signalIndex < historyLength; signalIndex += 1) {
                     clock.tick(100);
                     history.addSignals(0);
                     time.addSignals(Date.now());
@@ -219,7 +219,7 @@ describe('lib/SignalHistory', () => {
                 const timeWindow = 10;
                 const history = new SignalHistory({
                     timeWindow,
-                    lengthLimit: null
+                    historyLength: null
                 });
 
                 history.addSignals(0);

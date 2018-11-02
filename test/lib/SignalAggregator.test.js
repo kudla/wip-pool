@@ -114,5 +114,21 @@ describe('lib/SignalAggregator', () => {
 
             expect(aggregator1).to.be.deep.equal(aggregator2);
         });
+
+        it('should copare zero values for min', () => {
+            const signals = [0, 10];
+
+            aggregator.addSignals(...signals);
+
+            expect(aggregator).to.be.deep.include({min: 0});
+        });
+
+        it('should copare zero values for max', () => {
+            const signals = [0, -10];
+
+            aggregator.addSignals(...signals);
+
+            expect(aggregator).to.be.deep.include({max: 0});
+        });
     });
 });
