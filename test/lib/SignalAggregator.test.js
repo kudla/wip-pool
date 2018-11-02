@@ -115,7 +115,7 @@ describe('lib/SignalAggregator', () => {
             expect(aggregator1).to.be.deep.equal(aggregator2);
         });
 
-        it('should copare zero values for min', () => {
+        it('should compare zero values for min', () => {
             const signals = [0, 10];
 
             aggregator.addSignals(...signals);
@@ -123,12 +123,36 @@ describe('lib/SignalAggregator', () => {
             expect(aggregator).to.be.deep.include({min: 0});
         });
 
-        it('should copare zero values for max', () => {
+        it('should compare zero values for max', () => {
             const signals = [0, -10];
 
             aggregator.addSignals(...signals);
 
             expect(aggregator).to.be.deep.include({max: 0});
         });
+
+        it('should accept other SignalAggregator', () => {
+            const signals1 = [10, 20];
+            const signals2 = [30, 40];
+
+            aggregator.addSignals(
+                ...signals1,
+                new SignalAggregator(...signals2)
+            );
+
+            expect(aggregator).to.deep.equal(new SignalAggregator(...signals1, ...signals2));
+        });
+
+        it('should accept empty SignalAggregator', () => {
+            const signals = [10, 20];
+
+            aggregator.addSignals(
+                ...signals,
+                new SignalAggregator()
+            );
+
+            expect(aggregator).to.deep.equal(new SignalAggregator(...signals));
+        });
+
     });
 });

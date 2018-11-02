@@ -1,5 +1,9 @@
 const {WipPool} = require('../../../../lib/WipPool');
+const {SignalAggregator} = require('../../../../lib/SignalAggregator');
 const {useFakeTimers} = require('sinon');
+const {pick} = require('lodash');
+
+const DEFAULT_PREPARE_TIME = 1000;
 
 describe('lib/WipPool:planning:stats', () => {
     let pool;
@@ -76,6 +80,43 @@ describe('lib/WipPool:planning:stats', () => {
                 clock.tick(demandInterval);
             }
             expect(pool.getStats().demandRate).to.be.equal(demandRate);
+        });
+    });
+
+    describe('prepareTime', () => {
+        it('should be 0 by default', () => {
+            pool = new WipPool(() => {});
+            expect(pool.getStats().prepareTime).to.be.deep.equal({
+                min: 0,
+                max: 0,
+                avg: 0
+            });
+        });
+
+        it('should add stats on wip is prepared', async () => {
+            pool = new WipPool(() => new Promise(resolve => setTimeout(resolve, DEFAULT_PREPARE_TIME)));
+            const wip = pool.prepareWip();
+            clock.tick(DEFAULT_PREPARE_TIME);
+            await wip;
+            clock.tick(DEFAULT_PREPARE_TIME);
+
+            expect(pool.getStats().prepareTime).to.be.deep.equal(
+                pick(new SignalAggregator(DEFAULT_PREPARE_TIME), 'min', 'max', 'avg')
+            );
+        });
+
+        it('should add stats of wip that is currently prepareing', async () => {
+            const HALF_TIME = DEFAULT_PREPARE_TIME / 2;
+            pool = new WipPool(() => new Promise(resolve => setTimeout(resolve, DEFAULT_PREPARE_TIME)));
+            let wip = pool.prepareWip();
+            clock.tick(DEFAULT_PREPARE_TIME);
+            await wip;
+            wip = pool.prepareWip();
+            clock.tick(HALF_TIME);
+
+            expect(pool.getStats().prepareTime).to.be.deep.equal(
+                pick(new SignalAggregator(DEFAULT_PREPARE_TIME, HALF_TIME), 'min', 'max', 'avg')
+            );
         });
     });
 });
