@@ -35,7 +35,7 @@ describe('lib/WipPool:planning:stats', () => {
                 pool.next();
                 clock.tick(demandInterval);
             }
-            expect(Math.abs(pool.getStats().demandRate - demandRate)).to.be.below(2 * demandRate / demandCount);
+            expect(pool.getStats().demandRate).to.be.equal(demandRate);
         });
 
         it('should use limited history', () => {
@@ -54,10 +54,10 @@ describe('lib/WipPool:planning:stats', () => {
                 pool.next();
                 clock.tick(demandInterval);
             }
-            expect(Math.abs(pool.getStats().demandRate - demandRate)).to.be.below(2 * demandRate / demandHistoryLength);
+            expect(pool.getStats().demandRate).to.be.equal(demandRate);
         });
 
-        it('should use limited history', () => {
+        it('should use history from timeWindow', () => {
             const demandInterval = 1000;
             const demandRate = 1 / demandInterval;
             const demandCount = 10;
@@ -75,7 +75,7 @@ describe('lib/WipPool:planning:stats', () => {
                 pool.next();
                 clock.tick(demandInterval);
             }
-            expect(Math.abs(pool.getStats().demandRate - demandRate)).to.be.below(2 * demandRate / demandCount);
+            expect(pool.getStats().demandRate).to.be.equal(demandRate);
         });
     });
 });
