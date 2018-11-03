@@ -7,7 +7,7 @@ describe('lib/iterators/fromIterator', () => {
         let index = -1;
         return {
             next() {
-                return new Promise(resolve => {
+                return new Promise((resolve) => {
                     index += 1;
                     if (index < sequence.length) {
                         return resolve({
@@ -15,13 +15,13 @@ describe('lib/iterators/fromIterator', () => {
                             done: false
                         });
                     }
-                    resolve({
+                    return resolve({
                         done: true,
                         value: undefined
                     });
                 });
             }
-        }
+        };
     }
     iteratorTest(fromIterator, sourceFactory);
 });

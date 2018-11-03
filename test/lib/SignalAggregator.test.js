@@ -36,7 +36,7 @@ describe('lib/SignalAggregator', () => {
             expect(aggregator.addSignals).to.be.instanceof(Function);
         });
 
-        it('should affect aggregation with addSignalsed signal', () => {
+        it('should affect aggregation with added signal', () => {
             const signal = 5;
 
             aggregator.addSignals(signal);
@@ -53,16 +53,10 @@ describe('lib/SignalAggregator', () => {
         it('should skip non number signals', () => {
             aggregator.addSignals('5');
 
-            expect(aggregator).to.be.deep.equal({
-                count: 0,
-                sum: 0,
-                avg: 0,
-                min: null,
-                max: null
-            });
+            expect(aggregator).to.be.deep.equal(new SignalAggregator());
         });
 
-        it('should affect aggregation with addSignalsed signals', () => {
+        it('should affect aggregation with added signals', () => {
             const minSignal = 10;
             const maxSignal = 20;
             const signals = [minSignal, maxSignal];
@@ -104,7 +98,7 @@ describe('lib/SignalAggregator', () => {
             });
         });
 
-        it('should be inited with signls on creation', () => {
+        it('should be initiated with signals on creation', () => {
             const signals = [10, 20];
 
             const aggregator1 = new SignalAggregator(...signals);
@@ -153,6 +147,5 @@ describe('lib/SignalAggregator', () => {
 
             expect(aggregator).to.deep.equal(new SignalAggregator(...signals));
         });
-
     });
 });

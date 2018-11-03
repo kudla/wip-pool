@@ -6,15 +6,21 @@ function iteratorTest(iteratorFactory, sourceFactory, nonCompatibleValue) {
     });
 
     it('should iterate over factory sequence', async () => {
-        const secuence = [1, 2, 3];
-        const iterator = iteratorFactory(sourceFactory(secuence));
+        const sequence = [1, 2, 3];
+        const iterator = iteratorFactory(sourceFactory(sequence));
 
         let result = [];
-        while(({done, value} = await iterator.next()), !done) {
+        let done;
+        let value;
+        // eslint-disable-next-line no-await-in-loop, no-cond-assign
+        while (({done, value} = await iterator.next())) {
+            if (done) {
+                break;
+            }
             result = [...result, value];
         }
 
-        expect(result).to.be.deep.equal(secuence);
+        expect(result).to.be.deep.equal(sequence);
     });
 
     it('should not produce iterator for non compatible source', () => {
@@ -22,9 +28,9 @@ function iteratorTest(iteratorFactory, sourceFactory, nonCompatibleValue) {
         expect(Boolean(iterator)).to.be.equal(false);
     });
 
-    it.skip('should be used to reate appropriate iterator for WipPool', () => {
+    it.skip('should be used to rate appropriate iterator for WipPool', () => {
         // TODO
-    })
+    });
 }
 
 module.exports = {

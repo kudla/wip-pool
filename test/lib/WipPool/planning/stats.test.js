@@ -1,7 +1,8 @@
-const {WipPool} = require('../../../../lib/WipPool');
-const {SignalAggregator} = require('../../../../lib/SignalAggregator');
 const {useFakeTimers} = require('sinon');
 const {pick} = require('lodash');
+
+const {WipPool} = require('../../../../lib/WipPool');
+const {SignalAggregator} = require('../../../../lib/SignalAggregator');
 
 const DEFAULT_PREPARE_TIME = 1000;
 
@@ -27,7 +28,6 @@ describe('lib/WipPool:planning:stats', () => {
         it('should be 0 by default', () => {
             pool = new WipPool(() => {});
             expect(pool.getStats()).to.deep.include({demandRate: 0});
-
         });
 
         it('should be affected with incoming demands', () => {
@@ -35,7 +35,7 @@ describe('lib/WipPool:planning:stats', () => {
             const demandInterval = 1000;
             const demandRate = 1 / demandInterval;
             const demandCount = 10;
-            for(let demandIndex = 0; demandIndex < demandCount; demandIndex += 1) {
+            for (let demandIndex = 0; demandIndex < demandCount; demandIndex += 1) {
                 pool.next();
                 clock.tick(demandInterval);
             }
@@ -49,12 +49,12 @@ describe('lib/WipPool:planning:stats', () => {
             const demandRate = 1 / demandInterval;
 
             // too rare demands out of history range
-            for(let demandIndex = 0; demandIndex < demandHistoryLength; demandIndex += 1) {
+            for (let demandIndex = 0; demandIndex < demandHistoryLength; demandIndex += 1) {
                 pool.next();
                 clock.tick(demandInterval * 1000);
             }
 
-            for(let demandIndex = 0; demandIndex < demandHistoryLength; demandIndex += 1) {
+            for (let demandIndex = 0; demandIndex < demandHistoryLength; demandIndex += 1) {
                 pool.next();
                 clock.tick(demandInterval);
             }
@@ -69,13 +69,13 @@ describe('lib/WipPool:planning:stats', () => {
             pool = new WipPool(() => {}, {demandTimeWindow});
 
             // too rare demands out of history range
-            for(let demandIndex = 0; demandIndex < demandCount; demandIndex += 1) {
+            for (let demandIndex = 0; demandIndex < demandCount; demandIndex += 1) {
                 pool.next();
                 clock.tick(demandInterval * 1000);
             }
             clock.tick(demandTimeWindow);
 
-            for(let demandIndex = 0; demandIndex < demandCount; demandIndex += 1) {
+            for (let demandIndex = 0; demandIndex < demandCount; demandIndex += 1) {
                 pool.next();
                 clock.tick(demandInterval);
             }
