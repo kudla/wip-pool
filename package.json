@@ -2,7 +2,7 @@
   "name": "wip-pool",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "lib",
   "scripts": {
     "lint": "eslint .",
     "test": "DEBUG='' node --harmony-async-iteration node_modules/.bin/mocha --require test/context 'test/**/*.test.js'"
@@ -20,7 +20,6 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
-    "debug": "^4.1.0",
     "eslint": "^5.7.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-chai-expect": "^2.0.1",
@@ -29,5 +28,8 @@
     "mocha": "^5.2.0",
     "promise-status-async": "^1.1.1",
     "sinon": "^7.1.0"
+  },
+  "dependencies": {
+    "debug": "^4.1.0"
   }
 }
