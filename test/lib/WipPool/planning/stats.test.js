@@ -30,7 +30,7 @@ describe('lib/WipPool:planning:stats', () => {
             expect(pool.getStats()).to.deep.include({demandRate: 0});
         });
 
-        it('should be affected with incoming demands', () => {
+        it('should be affected with incoming demandHistory', () => {
             pool = new WipPool(() => {});
             const demandInterval = 1000;
             const demandRate = 1 / demandInterval;
@@ -105,7 +105,7 @@ describe('lib/WipPool:planning:stats', () => {
             );
         });
 
-        it('should add stats of wip that is currently prepareing', async () => {
+        it('should add stats of wip that is currently preparing', async () => {
             const HALF_TIME = DEFAULT_PREPARE_TIME / 2;
             pool = new WipPool(() => new Promise(resolve => setTimeout(resolve, DEFAULT_PREPARE_TIME)));
             let wip = pool.prepareWip();
