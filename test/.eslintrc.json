@@ -1,8 +1,11 @@
 {
   "parserOptions": {
-    "ecmaVersion": 8
+    "ecmaVersion": 9
   },
   "env": {
     "jest": true
+  },
+  "rules": {
+    "no-await-in-loop": "off"
   }
 }

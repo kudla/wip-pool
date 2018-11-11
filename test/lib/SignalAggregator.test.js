@@ -16,8 +16,8 @@ describe('lib/SignalAggregator', () => {
             count: 0,
             sum: 0,
             avg: 0,
-            min: null,
-            max: null
+            min: undefined,
+            max: undefined
         });
     });
 
