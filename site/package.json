@@ -21,7 +21,9 @@
     "start": "REACT_APP_ENDPOINT= react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy:gh-pages": "ORIGIN=$(git remote get-url origin) && cd build && git init && git remote add origin $ORIGIN && git checkout --orphan gh-pages && git add . && git commit -m deploy && git push --set-upstream origin gh-pages -f",
+    "deploy": "npm run build && npm run deploy:gh-pages"
   },
   "homepage": "/wip-pool"
 }
