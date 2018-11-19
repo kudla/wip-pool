@@ -11,7 +11,7 @@ import {
 import {Home} from './pages/Home';
 import {NotFound} from './pages/NotFound';
 
-import './App.css';
+import './App.scss';
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/table/lib/css/table.css';
 
