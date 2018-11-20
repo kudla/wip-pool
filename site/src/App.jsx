@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { createBrowserHistory } from 'history';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 
 import {
@@ -9,15 +8,12 @@ import {
 } from '@blueprintjs/core';
 
 import {Home} from './pages/Home';
+import {FlowDemo} from './pages/FlowDemo';
 import {NotFound} from './pages/NotFound';
 
 import './App.scss';
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/table/lib/css/table.css';
-
-
-const history = createBrowserHistory();
-
 
 
 class App extends Component {
@@ -26,10 +22,11 @@ class App extends Component {
       <div className="app">
         <div className="app-screen">
           <Card className="app-content" elevation="4">
-            <HashRouter history={history}>
+            <HashRouter>
               <Switch>
-                <Route path="/" component={Home} />
-                <Route path='*' exact={true} component={NotFound} />
+                <Route path="/" exact component={Home} />
+                <Route path="/flow-demo" exact component={FlowDemo} />
+                <Route path="*" exact component={NotFound} />
               </Switch>
             </HashRouter>
           </Card>
