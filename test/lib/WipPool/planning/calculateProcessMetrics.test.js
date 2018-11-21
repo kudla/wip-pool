@@ -11,7 +11,8 @@ const INITIAL_STATS = {
         min: 0,
         max: 0,
         avg: 0
-    }
+    },
+    demandIdle: 0
 };
 
 
@@ -23,7 +24,6 @@ const DEMAND_INTERVAL = {
     max: 1500
 };
 
-const NOW = 10000;
 const PREPARE_AVG_INTERVAL = 1000;
 const PREPARE_MAX_INTERVAL = 1500;
 const PREPARE_INTERVAL = {
@@ -34,7 +34,8 @@ const PREPARE_INTERVAL = {
 
 const PROGRESS_STATS = {
     demandInterval: DEMAND_INTERVAL,
-    prepareInterval: PREPARE_INTERVAL
+    prepareInterval: PREPARE_INTERVAL,
+    demandIdle: 0
 };
 
 const DEFAULT_METRICS = {
@@ -59,17 +60,17 @@ describe('lib/WipPool/planning/calculateProcessMetrics', () => {
     });
 
     it('should be resolved on initial stats', () => {
-        expect(calculateProcessMetrics(INITIAL_STATS, NOW)).to.be.deep.equal(DEFAULT_METRICS);
+        expect(calculateProcessMetrics(INITIAL_STATS)).to.be.deep.equal(DEFAULT_METRICS);
     });
 
     it('should be resolved on progress stats', () => {
-        expect(calculateProcessMetrics(PROGRESS_STATS, NOW))
+        expect(calculateProcessMetrics(PROGRESS_STATS))
             .to.be.deep.equal(DEFAULT_PROGRESS_METRICS);
     });
 
     it('should allow to define prepare interval estimation metric', () => {
         const prepareInterval = PREPARE_MAX_INTERVAL;
-        expect(calculateProcessMetrics(PROGRESS_STATS, NOW, {estimationPrepareInterval: 'max'}))
+        expect(calculateProcessMetrics(PROGRESS_STATS, {estimationPrepareInterval: 'max'}))
             .to.be.deep.equal({
                 ...DEFAULT_PROGRESS_METRICS,
                 prepareInterval,
@@ -80,7 +81,7 @@ describe('lib/WipPool/planning/calculateProcessMetrics', () => {
     it('should allow to define custom prepare interval estimator', () => {
         const estimationPrepareInterval = ({avg, max}) => (avg + max) / 2;
         const prepareInterval = estimationPrepareInterval(PREPARE_INTERVAL);
-        expect(calculateProcessMetrics(PROGRESS_STATS, NOW, {estimationPrepareInterval}))
+        expect(calculateProcessMetrics(PROGRESS_STATS, {estimationPrepareInterval}))
             .to.be.deep.equal({
                 ...DEFAULT_PROGRESS_METRICS,
                 prepareInterval,
@@ -90,7 +91,7 @@ describe('lib/WipPool/planning/calculateProcessMetrics', () => {
 
     it('should allow to define demand interval estimation metric', () => {
         const demandInterval = DEMAND_MIN_INTERVAL;
-        expect(calculateProcessMetrics(PROGRESS_STATS, NOW, {estimationDemandInterval: 'min'}))
+        expect(calculateProcessMetrics(PROGRESS_STATS, {estimationDemandInterval: 'min'}))
             .to.be.deep.equal({
                 ...DEFAULT_PROGRESS_METRICS,
                 demandInterval,
@@ -101,7 +102,7 @@ describe('lib/WipPool/planning/calculateProcessMetrics', () => {
     it('should allow to define custom demand interval estimator', () => {
         const estimationDemandInterval = ({avg, max}) => (avg + max) / 2;
         const demandInterval = estimationDemandInterval(PREPARE_INTERVAL);
-        expect(calculateProcessMetrics(PROGRESS_STATS, NOW, {estimationDemandInterval}))
+        expect(calculateProcessMetrics(PROGRESS_STATS, {estimationDemandInterval}))
             .to.be.deep.equal({
                 ...DEFAULT_PROGRESS_METRICS,
                 demandInterval,
@@ -111,7 +112,7 @@ describe('lib/WipPool/planning/calculateProcessMetrics', () => {
 
     it('should allow to define custom reserve factor', () => {
         const estimationReserveFactor = 5;
-        expect(calculateProcessMetrics(PROGRESS_STATS, NOW, {estimationReserveFactor}))
+        expect(calculateProcessMetrics(PROGRESS_STATS, {estimationReserveFactor}))
             .to.be.deep.equal({
                 ...DEFAULT_PROGRESS_METRICS,
                 reserveFactor: estimationReserveFactor
@@ -120,7 +121,7 @@ describe('lib/WipPool/planning/calculateProcessMetrics', () => {
 
     it('should allow to define custom reserve volume', () => {
         const estimationReserveVolume = 10;
-        expect(calculateProcessMetrics(PROGRESS_STATS, NOW, {estimationReserveVolume}))
+        expect(calculateProcessMetrics(PROGRESS_STATS, {estimationReserveVolume}))
             .to.be.deep.equal({
                 ...DEFAULT_PROGRESS_METRICS,
                 reserveVolume: estimationReserveVolume
@@ -136,8 +137,8 @@ describe('lib/WipPool/planning/calculateProcessMetrics', () => {
 
         expect(calculateProcessMetrics({
             ...PROGRESS_STATS,
-            lastDemandInterval: NOW - demandIdle
-        }, NOW))
+            demandIdle
+        }))
             .to.be.deep.equal({
                 ...DEFAULT_PROGRESS_METRICS,
                 demandIdle,
