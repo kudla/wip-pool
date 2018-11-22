@@ -1,7 +1,7 @@
 import React from 'react';
 import {compose, setDisplayName, withStateHandlers, lifecycle, withHandlers, withProps, withPropsOnChange} from 'recompose';
 import {WipPool} from 'wip-pool';
-import {Button, Card} from '@blueprintjs/core';
+import {Button, Card, FormGroup} from '@blueprintjs/core';
 import {sortBy} from 'lodash';
 
 import {getWipPrepareTime} from './utils/getWipPrepareTime';
@@ -17,24 +17,30 @@ import {Wip} from './Wip';
 
 function FlowDemoRender({completeConstruction, wipBuffer, demands, demandAWip}) {
     return <div>
-        <Button onClick={demandAWip} />
-        <Card>
-            <h4>Wip pool</h4>
-            <div>
+        <FormGroup>
+            <Card>
+                <h4>Wip pool</h4>
+                <div>
+                    {
+                        wipBuffer.map(wip => (
+                            <Wip key={wip.constructionOrder} wip={wip} completeConstruction={completeConstruction} />
+                        ))
+                    }
+                </div>
+            </Card>
+        </FormGroup>
+        <FormGroup>
+            <Card>
                 {
-                    wipBuffer.map(wip => (
+                    demands.map(wip => (
                         <Wip key={wip.constructionOrder} wip={wip} completeConstruction={completeConstruction} />
                     ))
                 }
-            </div>
-        </Card>
-        <Card>
-            {
-                demands.map(wip => (
-                    <Wip key={wip.constructionOrder} wip={wip} completeConstruction={completeConstruction} />
-                ))
-            }
-        </Card>
+            </Card>
+        </FormGroup>
+        <FormGroup>
+            <Button onClick={demandAWip} text="Demand a wip"/>
+        </FormGroup>
     </div>
 }
 

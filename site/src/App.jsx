@@ -7,7 +7,7 @@ import {
 
 } from '@blueprintjs/core';
 
-import {Home} from './pages/Home';
+// import {Home} from './pages/Home';
 import {FlowDemo} from './pages/FlowDemo';
 import {NotFound} from './pages/NotFound';
 
