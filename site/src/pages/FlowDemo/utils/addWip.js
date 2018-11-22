@@ -7,14 +7,16 @@ export const addWip = ({constructionQueue, wipCount}) => (wip, resolve, prepareT
         resolve(constructionOrder);
     }
 
-    setTimeout(completeConstruction, prepareTime);
+    // setTimeout(completeConstruction, prepareTime);
 
     const wipConstruction = {
         constructionOrder,
         wip,
         start,
         prepareTime,
-        completeConstruction
+        releaseTime: start + prepareTime,
+        progress: 0,
+        complete: resolve
     };
 
     return {

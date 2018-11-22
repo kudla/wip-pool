@@ -1,6 +1,37 @@
 .wps-wip {
     display: inline-block;
-    &.pt-callout {
-        width: 3em;
+    width: 1.5em;
+    height: 5em;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 0.3em;
+    overflow: hidden;
+    position: relative;
+
+    &_id {
+        font-size: 0.8em;
+        color: #555;
+        position: absolute;
+        z-index: 2;
+        display: block;
+        transform: rotate(270deg) translateX(50%);
+        width: 100%;
+        top: 50%;
+    }
+
+    &__done {
+        border-color: #0d8050;
+    }
+
+    &_progress {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        background: #d5f0e6;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+        transition: width 0.2s;
+        box-shadow: inset 0px 0px 3px 2px white;
     }
 }

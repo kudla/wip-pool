@@ -1,7 +1,7 @@
 import React from 'react';
 import {compose, setDisplayName, withStateHandlers, lifecycle, withHandlers, withProps, withPropsOnChange} from 'recompose';
 import {WipPool} from 'wip-pool';
-import {Button} from '@blueprintjs/core';
+import {Button, Card} from '@blueprintjs/core';
 import {sortBy} from 'lodash';
 
 import {getWipPrepareTime} from './utils/getWipPrepareTime';
@@ -11,29 +11,30 @@ import {pullAWip} from './utils/pullAWip';
 import {addWip} from './utils/addWip';
 import {demandsGC} from './utils/demandsGC';
 import {utilizeWip} from './utils/utilizeWip';
+import {processConstructions} from './utils/processConstructions';
 
 import {Wip} from './Wip';
 
-function FlowDemoRender({wipBufferLength, completeConstruction, wipBuffer, demands, demandAWip, wipCount, demandCount}) {
+function FlowDemoRender({completeConstruction, wipBuffer, demands, demandAWip}) {
     return <div>
         <Button onClick={demandAWip} />
-        <div>
-            {
-                wipBuffer.map(wip => (
-                    <Wip key={wip.constructionOrder} wip={wip} completeConstruction={completeConstruction} />
-                ))
-            }
-        </div>
-        <div>buffer {wipBufferLength}</div>
-        <div>demands {demands.length}</div>
-        <div>created {wipCount}</div>
-        <div>
+        <Card>
+            <h4>Wip pool</h4>
+            <div>
+                {
+                    wipBuffer.map(wip => (
+                        <Wip key={wip.constructionOrder} wip={wip} completeConstruction={completeConstruction} />
+                    ))
+                }
+            </div>
+        </Card>
+        <Card>
             {
                 demands.map(wip => (
                     <Wip key={wip.constructionOrder} wip={wip} completeConstruction={completeConstruction} />
                 ))
             }
-        </div>
+        </Card>
     </div>
 }
 
@@ -51,7 +52,8 @@ export const FlowDemo = compose(
             wipCount: 0,
             doneCount: 0,
             demandCount: 0,
-            usedCount: 0
+            usedCount: 0,
+            lastProcessing: 0
         },
         {
             setState: () => patch => patch,
@@ -59,7 +61,8 @@ export const FlowDemo = compose(
             pullAWip,
             addWip,
             demandsGC,
-            utilizeWip
+            utilizeWip,
+            processConstructions
         }
     ),
     withHandlers({
@@ -76,12 +79,30 @@ export const FlowDemo = compose(
     }),
     lifecycle({
         componentDidMount() {
-            const {setState, wipFactory, demandsGC} = this.props;
+            const {setState, wipFactory, demandsGC, processConstructions} = this.props;
             const demandsGCTimer = setInterval(demandsGC, 1000);
             setState({
-                wipPool: new WipPool(wipFactory),
+                wipPool: new WipPool(wipFactory, {
+                    demandHistoryLength: 7,
+                    demandTimeWindow: 7000,
+                    prepareHistoryLength: 7,
+                    prepareTimeWindow: 7000
+                }),
                 demandsGCTimer
             });
+            this.mounted = true;
+
+            const process = now => {
+                if (!this.mounted) {
+                    return;
+                }
+                now && processConstructions(now);
+                requestAnimationFrame(process);
+            }
+            process();
+        },
+        componentWillUnmount() {
+            delete this.mounted;
         }
     }),
     withProps(({

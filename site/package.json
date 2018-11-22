@@ -1,6 +1,6 @@
 {
   "name": "wip-pool-site",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "@blueprintjs/core": "^2.0.0-rc.3",
@@ -54,7 +54,7 @@
     "webpack-dev-server": "2.9.4",
     "webpack-manifest-plugin": "1.3.2",
     "whatwg-fetch": "2.0.3",
-    "wip-pool": "^0.1.1"
+    "wip-pool": "^0.1.2"
   },
   "scripts": {
     "start": "REACT_APP_ENDPOINT= node scripts/start.js",
@@ -108,6 +108,7 @@
   },
   "devDependencies": {
     "node-sass": "^4.10.0",
-    "sass-loader": "^7.1.0"
+    "sass-loader": "^7.1.0",
+    "uglifyjs-webpack-plugin": "^2.0.1"
   }
 }

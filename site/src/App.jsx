@@ -24,8 +24,8 @@ class App extends Component {
           <Card className="app-content" elevation="4">
             <HashRouter>
               <Switch>
-                <Route path="/" exact component={Home} />
-                <Route path="/flow-demo" exact component={FlowDemo} />
+                <Route path="/" exact component={FlowDemo} />
+                {/* <Route path="/flow-demo" exact component={FlowDemo} /> */}
                 <Route path="*" exact component={NotFound} />
               </Switch>
             </HashRouter>
