@@ -17,7 +17,7 @@ import {Wip} from './Wip';
 
 function FlowDemoRender({completeConstruction, wipBuffer, demands, demandAWip}) {
     return <div className="wps-flow-demo">
-        <h3>How WIP pool works</h3>
+        <h3>How WIP-pool works</h3>
         <FormGroup>
             <Card>
                 <h4>Wip pool</h4>
@@ -30,7 +30,7 @@ function FlowDemoRender({completeConstruction, wipBuffer, demands, demandAWip}) 
                 </div>
             </Card>
         </FormGroup>
-        <FormGroup>
+        <FormGroup className="wps-flow-demo__consumer">
             <Card>
                 <h4>Wip consumer <Button onClick={demandAWip} text="Demand a wip"/></h4>
                 <div className="wps-wip-container">

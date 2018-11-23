@@ -11,6 +11,18 @@
     "type": "git",
     "url": "git+https://github.com/kudla/wip-pool.git"
   },
+  "keywords": [
+    "wip",
+    "job",
+    "work",
+    "task",
+    "process",
+    "planning",
+    "management",
+    "schedule",
+    "estimate",
+    "forecast"
+  ],
   "author": "Artem Kudla <kudla.artem@gmail.com>",
   "license": "MIT",
   "bugs": {
