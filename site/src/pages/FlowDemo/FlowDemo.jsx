@@ -16,11 +16,12 @@ import {processConstructions} from './utils/processConstructions';
 import {Wip} from './Wip';
 
 function FlowDemoRender({completeConstruction, wipBuffer, demands, demandAWip}) {
-    return <div>
+    return <div className="wps-flow-demo">
+        <h3>How WIP pool works</h3>
         <FormGroup>
             <Card>
                 <h4>Wip pool</h4>
-                <div>
+                <div className="wps-wip-container">
                     {
                         wipBuffer.map(wip => (
                             <Wip key={wip.constructionOrder} wip={wip} completeConstruction={completeConstruction} />
@@ -31,15 +32,18 @@ function FlowDemoRender({completeConstruction, wipBuffer, demands, demandAWip}) 
         </FormGroup>
         <FormGroup>
             <Card>
-                {
-                    demands.map(wip => (
-                        <Wip key={wip.constructionOrder} wip={wip} completeConstruction={completeConstruction} />
-                    ))
-                }
+                <h4>Wip consumer <Button onClick={demandAWip} text="Demand a wip"/></h4>
+                <div className="wps-wip-container">
+                    {
+                        demands.map(wip => (
+                            <Wip key={wip.constructionOrder} wip={wip} completeConstruction={completeConstruction} />
+                        ))
+                    }
+                </div>
             </Card>
         </FormGroup>
         <FormGroup>
-            <Button onClick={demandAWip} text="Demand a wip"/>
+
         </FormGroup>
     </div>
 }

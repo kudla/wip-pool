@@ -1,12 +1,20 @@
+$wip-margin: .2em;
+$wip-height: 5em;
+
 .wps-wip {
     display: inline-block;
     width: 1.5em;
-    height: 5em;
+    height: $wip-height;
     text-align: center;
     border: 1px solid #ccc;
     border-radius: 0.3em;
     overflow: hidden;
     position: relative;
+    transition: transform .3s;
+    background: #fff;
+    margin-right: $wip-margin;
+    margin-bottom: $wip-margin;
+    cursor: pointer;
 
     &_id {
         font-size: 0.8em;
@@ -21,6 +29,7 @@
 
     &__done {
         border-color: #0d8050;
+        cursor: default;
     }
 
     &_progress {
@@ -34,4 +43,22 @@
         transition: width 0.2s;
         box-shadow: inset 0px 0px 3px 2px white;
     }
+
+    &_force-motion {
+        transition: none;
+    }
+
+    .pt-popover-wrapper,
+    .pt-popover-target {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.wps-wip-container {
+    display: flex;
+    flex-wrap: wrap;
+    min-height: $wip-height  + $wip-margin;
+    margin-right: -$wip-margin;
+    margin-bottom: -$wip-margin;
 }

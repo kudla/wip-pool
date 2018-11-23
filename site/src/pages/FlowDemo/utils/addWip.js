@@ -2,13 +2,6 @@ export const addWip = ({constructionQueue, wipCount}) => (wip, resolve, prepareT
     const start = Date.now();
     const constructionOrder = wipCount;
 
-
-    function completeConstruction() {
-        resolve(constructionOrder);
-    }
-
-    // setTimeout(completeConstruction, prepareTime);
-
     const wipConstruction = {
         constructionOrder,
         wip,
