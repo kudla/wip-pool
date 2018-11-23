@@ -5,16 +5,17 @@ import {isEqual} from 'lodash';
 import {compose, setDisplayName} from 'recompose';
 import {Tooltip} from '@blueprintjs/core';
 
+const wipStates  = {};
 class WipRender extends Component {
     componentDidMount() {
         const element = findDOMNode(this);
-        const {wip: constructionOrder} = this.props;
-        const {
-            offsetLeft,
-            offsetTop
-        } = element;
+        const {wip: {constructionOrder}} = this.props;
+        if (constructionOrder && !(constructionOrder in wipStates)) {
+            const {offsetLeft, offsetTop} = element;
+            wipStates[constructionOrder] = {offsetLeft, offsetTop};
+        }
 
-        Object.assign(this, { element, checkpoint: {position: {offsetLeft, offsetTop}, constructionOrder}});
+        Object.assign(this, {element});
     }
     componentWillUnmount() {
         delete this.element;
@@ -30,39 +31,45 @@ class WipRender extends Component {
         try{
             const {element} = this;
             if (element) {
+                const {wip: {constructionOrder}} = this.props;
                 const clientRect =  element.getBoundingClientRect();
                 const containerRect =  element.offsetParent.getBoundingClientRect();
                 const {offsetLeft, offsetTop} = element;
                 const animatedX = clientRect.x - containerRect.x - offsetLeft;
                 const animatedY = clientRect.y - containerRect.y - offsetTop;
-                Object.assign(this, {animationStatus: {animatedX, animatedY}});
+                Object.assign(this, {animationStatus: {animatedX, animatedY}, constructionOrder});
             }
         } catch (error) {
         }
     }
     trackTheMotion() {
         try{
-            const {element, checkpoint, props} = this;
+            const {element, props} = this;
             const {offsetLeft, offsetTop} = element;
             const {wip: {constructionOrder}} = props;
             if (!element) {
                 return;
             }
 
-            Object.assign(this, {checkpoint: {constructionOrder, position: {offsetLeft, offsetTop}}});
-            if (!isEqual(checkpoint.position, {offsetLeft, offsetTop})) {
+            const storedPosition = wipStates[constructionOrder];
+            if (constructionOrder) {
+                wipStates[constructionOrder] = {offsetLeft, offsetTop};
+            }
+            if (!isEqual(storedPosition, {offsetLeft, offsetTop})) {
                 if (this.motionTimer) {
                     clearTimeout(this.motionTimer);
                     delete this.motionTimer;
                 }
                 element.classList.add('wps-wip_force-motion');
-                if (constructionOrder !== checkpoint.constructionOrder) {
+                if (!constructionOrder || !storedPosition) {
                     element.style = '';
                     element.classList.remove('wps-wip_force-motion');
                 } else {
-                    const motionX = offsetLeft - checkpoint.position.offsetLeft;
-                    const motionY = offsetTop - checkpoint.position.offsetTop;
-                    const {animatedX, animatedY} = this.animationStatus;
+                    const motionX = offsetLeft - storedPosition.offsetLeft;
+                    const motionY = offsetTop - storedPosition.offsetTop;
+                    const {animatedX, animatedY} = this.constructionOrder === constructionOrder
+                        ? this.animationStatus
+                        : {animatedX: 0, animatedY: 0};
                     element.style = `transform: translate(${animatedX-motionX}px, ${animatedY-motionY}px)`;
                     this.motionTimer = setTimeout(() => {
                         delete this.motionTimer;

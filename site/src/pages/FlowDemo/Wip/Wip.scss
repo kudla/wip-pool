@@ -61,4 +61,5 @@ $wip-height: 5em;
     min-height: $wip-height  + $wip-margin;
     margin-right: -$wip-margin;
     margin-bottom: -$wip-margin;
+    flex-flow:  wrap-reverse;
 }
