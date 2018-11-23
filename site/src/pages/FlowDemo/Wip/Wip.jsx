@@ -9,13 +9,15 @@ const wipStates  = {};
 class WipRender extends Component {
     componentDidMount() {
         const element = findDOMNode(this);
-        const {wip: {constructionOrder}} = this.props;
-        if (constructionOrder && !(constructionOrder in wipStates)) {
-            const {offsetLeft, offsetTop} = element;
-            wipStates[constructionOrder] = {offsetLeft, offsetTop};
-        }
-
         Object.assign(this, {element});
+        // const {wip: {constructionOrder}} = this.props;
+        // if (constructionOrder && !(constructionOrder in wipStates)) {
+        //     const {offsetLeft, offsetTop} = element;
+        //     wipStates[constructionOrder] = {offsetLeft, offsetTop};
+        // }
+        this.storeAnimationStatus();
+        this.trackTheMotion();
+
     }
     componentWillUnmount() {
         delete this.element;
